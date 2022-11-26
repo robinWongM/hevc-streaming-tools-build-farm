@@ -34,8 +34,8 @@ jobs:
           cp ffmpeg_rtmp_h265/flv*.c FFmpeg/libavformat/
       - name: Build FFmpeg
         run: |
+          export PKG_CONFIG_PATH=$(pwd)/x264/build/lib/pkgconfig:$(pwd)/x265_git/build/linux/build/lib/pkgconfig
           cd FFmpeg
-          env PKG_CONFIG_PATH=$GITHUB_WORKSPACE/x264/build/lib/pkgconfig:$GITHUB_WORKSPACE/x265_git/build/linux/build/lib/pkgconfig \
           ./configure \
             --prefix=$(pwd)/build \
             --enable-gpl --enable-nonfree --enable-pthreads --extra-libs=-lpthread \
@@ -51,4 +51,4 @@ jobs:
         with:
           name: ffmpeg
           path: |
-            FFmpeg/build/**/*
+            FFmpeg/build/bin/ffmpeg
