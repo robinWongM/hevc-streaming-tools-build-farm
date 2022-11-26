@@ -14,14 +14,21 @@ jobs:
           git clone https://github.com/ossrs/srs.git
           cd srs/trunk
           git checkout 70d5618979e5c8dc41b7cd87c78db7ca2b8a10e8 # 6.0.4
-          ./configure --h265=on
-          make
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      - name: Login to ghcr.io
+        uses: docker/login-action@v2
         with:
-          name: ossrs
-          path: |
-            srs/trunk/objs/srs
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3.2.0
+        with:
+          # Build's context is the set of files located in the specified PATH or URL
+          context: srs/trunk
+          # Path to the Dockerfile
+          file: srs/trunk/Dockerfile
+          push: true
+          tags: robinWongM/ossrs:6.0.4
   ffmpeg:
     runs-on: ubuntu-latest
     steps:
