@@ -50,4 +50,4 @@ jobs:
         with:
           name: ffmpeg
           path: |
-            build/**/*.*
+            build/**/*
