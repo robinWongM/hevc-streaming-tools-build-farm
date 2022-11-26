@@ -24,7 +24,7 @@ jobs:
         uses: docker/build-push-action@v3.2.0
         with:
           # Build's context is the set of files located in the specified PATH or URL
-          context: srs/trunk
+          context: srs/
           # Path to the Dockerfile
           file: srs/trunk/Dockerfile
           push: true
