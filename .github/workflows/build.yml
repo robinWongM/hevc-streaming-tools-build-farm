@@ -6,6 +6,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  ossrs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build ossrs
+        run: |
+          git clone https://github.com/ossrs/srs.git
+          cd srs/trunk
+          git checkout 70d5618979e5c8dc41b7cd87c78db7ca2b8a10e8 # 6.0.4
+          ./configure --h265=on
+          make
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ossrs
+          path: |
+            srs/trunk/objs/srs
   ffmpeg:
     runs-on: ubuntu-latest
     steps:
