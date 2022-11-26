@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  ffmpeg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build x264
+        run: |
+          git clone https://code.videolan.org/videolan/x264.git
+          cd x264
+          ./configure --prefix=$(pwd)/build --disable-asm --disable-cli --disable-shared --enable-static
+          make -j2
+          make install
+      - name: Build x265
+        run: |
+          git clone https://bitbucket.org/multicoreware/x265_git.git
+          cd x265_git/build/linux
+          cmake -DCMAKE_INSTALL_PREFIX=$(pwd)/build -DENABLE_SHARED=OFF ../../source
+          make -j2
+          make install
+      - name: Patch FFmpeg
+        run: |
+          git clone https://github.com/FFmpeg/FFmpeg.git
+          cd FFmpeg
+          git checkout n5.1.2
+          cd ..
+          git clone -b 5.1 https://github.com/runner365/ffmpeg_rtmp_h265.git
+          cp ffmpeg_rtmp_h265/flv.h FFmpeg/libavformat/
+          cp ffmpeg_rtmp_h265/flv*.c FFmpeg/libavformat/
+      - name: Build FFmpeg
+        run: |
+          cd FFmpeg
+          env PKG_CONFIG_PATH=$GITHUB_WORKSPACE/x264/build/lib/pkgconfig:$GITHUB_WORKSPACE/x265_git/build/linux/build/lib/pkgconfig \
+          ./configure \
+            --prefix=$(pwd)/build \
+            --enable-gpl --enable-nonfree --enable-pthreads --extra-libs=-lpthread \
+            --disable-asm --disable-x86asm --disable-inline-asm \
+            --enable-decoder=aac --enable-decoder=aac_fixed --enable-decoder=aac_latm --enable-encoder=aac \
+            --enable-libx264 --enable-libx265 \
+            --pkg-config-flags='--static'
+          make -j2
+          make install
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ffmpeg
+          path: |
+            build/**/*.*
