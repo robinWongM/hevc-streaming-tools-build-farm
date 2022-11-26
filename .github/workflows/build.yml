@@ -9,7 +9,7 @@ jobs:
   ossrs:
     runs-on: ubuntu-latest
     steps:
-      - name: Build ossrs
+      - name: Prepare
         run: |
           git clone https://github.com/ossrs/srs.git
           cd srs/trunk
@@ -28,7 +28,7 @@ jobs:
           # Path to the Dockerfile
           file: srs/trunk/Dockerfile
           push: true
-          tags: robinWongM/ossrs:6.0.4
+          tags: robinwongm/ossrs:6.0.4
   ffmpeg:
     runs-on: ubuntu-latest
     steps:
