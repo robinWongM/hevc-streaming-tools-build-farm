@@ -39,10 +39,11 @@ jobs:
           ./configure \
             --prefix=$(pwd)/build \
             --enable-gpl --enable-nonfree --enable-pthreads --extra-libs=-lpthread \
-            --disable-asm --disable-x86asm --disable-inline-asm \
+            --disable-asm --disable-x86asm --disable-inline-asm --disable-shared --disable-debug --disable-doc \
             --enable-decoder=aac --enable-decoder=aac_fixed --enable-decoder=aac_latm --enable-encoder=aac \
             --enable-libx264 --enable-libx265 \
-            --pkg-config-flags='--static'
+            --pkg-config-flags='--static' \
+            --extra-ldexeflags="-static"
           make -j2
           make install
       - name: Upload artifacts
