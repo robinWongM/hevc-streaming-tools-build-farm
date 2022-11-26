@@ -28,7 +28,7 @@ jobs:
           # Path to the Dockerfile
           file: srs/trunk/Dockerfile
           push: true
-          tags: robinwongm/ossrs:6.0.4
+          tags: ghcr.io/robinwongm/ossrs:6.0.4
   ffmpeg:
     runs-on: ubuntu-latest
     steps:
