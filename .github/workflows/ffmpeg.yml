@@ -23,6 +23,8 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=$(pwd)/build -DENABLE_SHARED=OFF ../../source
           make -j2
           make install
+          # https://github.com/markus-perl/ffmpeg-build-script/blob/master/build-ffmpeg#L559
+          sed -i.backup 's/-lgcc_s/-lgcc_eh/g' build/lib/pkgconfig/x265.pc
       - name: Patch FFmpeg
         run: |
           git clone https://github.com/FFmpeg/FFmpeg.git
